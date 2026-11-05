@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="ctl-token" content="{{token}}">
+  <title>Job Harness — Control Room</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Font Preloads (Above the fold) -->
+  <link rel="preload" href="/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/geist-400.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Module Preload -->
+  <link rel="modulepreload" href="/js/main.js">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/motion.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="aria-announcements" class="sr-only" aria-live="polite"></div>
+
+  <!-- Sticky Command Bar -->
+  <header class="command-bar" role="banner">
+    <div class="bar-cluster-left">
+      <div id="system-status" class="system-status" aria-label="System operational status">
+        <span class="status-dot idle" id="status-dot" aria-hidden="true"></span>
+        <span id="status-text">Idle. Next run computing...</span>
+      </div>
+
+      <!-- Signature Cycle Ring SVG (compact) -->
+      <div id="cycle-ring" class="cycle-ring-widget" title="6-Hour Cycle Countdown">
+        <div class="cycle-svg-wrap">
+          <svg class="cycle-svg" viewBox="0 0 36 36" width="24" height="24" aria-hidden="true">
+            <path class="cycle-bg-ring" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="cycle-arc" class="cycle-elapsed-arc" stroke-dasharray="100, 100" stroke-dashoffset="100" stroke-width="3.2" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+        </div>
+        <span id="cycle-countdown" class="cycle-time-text">--:--:--</span>
+      </div>
+
+      <!-- Segmented Control for 4 Views -->
+      <nav class="segmented-control" role="tablist" aria-label="Views">
+        <button type="button" class="seg-btn active" id="tab-today" data-view="today" role="tab" aria-selected="true" aria-controls="view-today"><kbd class="seg-key">1</kbd> Today</button>
+        <button type="button" class="seg-btn" id="tab-pipeline" data-view="pipeline" role="tab" aria-selected="false" aria-controls="view-pipeline"><kbd class="seg-key">2</kbd> Pipeline</button>
+        <button type="button" class="seg-btn" id="tab-library" data-view="library" role="tab" aria-selected="false" aria-controls="view-library"><kbd class="seg-key">3</kbd> Library</button>
+        <button type="button" class="seg-btn" id="tab-answers" data-view="answers" role="tab" aria-selected="false" aria-controls="view-answers"><kbd class="seg-key">4</kbd> Answers</button>
+      </nav>
+    </div>
+
+    <div class="bar-cluster-right">
+      <!-- Always-Visible Submit Indicator Badge (when submit is ON) -->
+      <button type="button" class="btn btn-sm badge-autoapply" id="badge-autoapply" hidden aria-label="Submit for real is ON. Click to immediately turn Off." aria-live="polite" title="Submit for real is ON. Click to immediately turn Off.">
+        <span class="badge-dot" aria-hidden="true">●</span>
+        <span id="badge-autoapply-text">SUBMIT: LIVE</span>
+      </button>
+
+      <button type="button" class="btn btn-sm btn-primary" id="btn-run-now" aria-label="Run automated cycle now">Run cycle now</button>
+
+      <!-- Hold-to-Confirm Kill Switch -->
+      <button type="button" class="btn btn-sm btn-killswitch" id="btn-killswitch" aria-label="Hold to engage KILL SWITCH" title="KILL SWITCH">
+        <span class="hold-progress" id="kill-progress" aria-hidden="true"></span>
+        <span id="kill-text">Kill switch</span>
+      </button>
+
+      <!-- Schedule Menu Dropdown -->
+      <div class="dropdown-wrapper">
+        <button type="button" class="btn btn-sm" id="btn-schedule-menu" aria-label="Schedule configuration menu" aria-expanded="false" aria-haspopup="true">Schedule ▾</button>
+        <div class="dropdown-menu" id="schedule-dropdown" role="menu">
+          <button type="button" class="menu-item" id="btn-toggle-schedule" role="menuitem">Cycle: Active</button>
+          <button type="button" class="menu-item" id="btn-toggle-portals" role="menuitem">Portals (Naukri, Instahyre): Paused</button>
+          <button type="button" class="menu-item" id="btn-toggle-people" role="menuitem">People networking: Active</button>
+          <button type="button" class="menu-item" id="btn-toggle-submit" role="menuitem">Submit for real: Off</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-sm" id="btn-shortcuts" aria-label="View keyboard shortcuts and palette (?)">
+        <kbd>?</kbd>
+      </button>
+      <button type="button" class="btn btn-sm" id="btn-theme" aria-label="Toggle dark and light visual theme">
+        <span id="theme-icon" aria-hidden="true">◐</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container with Three Active Views -->
+  <main id="main-content" class="main-wrapper" role="main">
+
+    <!-- VIEW 1: TODAY (Default Workspace, Fits in ~1.6 screens) -->
+    <section id="view-today" class="view-container active" role="tabpanel" aria-labelledby="tab-today">
+      <!-- Run progress status line -->
+      <section id="run-progress-panel" class="card run-progress-panel idle" aria-label="Run status">
+        <div class="progress-collapsed" id="progress-collapsed-view">
+          <div class="progress-collapsed-left">
+            <span class="status-dot idle" id="progress-status-dot" aria-hidden="true"></span>
+            <span class="progress-summary-text" id="progress-summary-text">Last run: Idle</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hero Metric Strip: Three Oversized Numerals -->
+      <div class="hero-strip" aria-label="Key Pipeline Metrics">
+        <div class="hero-card animate-entry stagger-1">
+          <div class="hero-numeral" id="stat-to-send">0</div>
+          <div class="hero-label">To send today</div>
+          <div class="hero-subtext">Awaiting your action in Chrome</div>
+        </div>
+        <div class="hero-card animate-entry stagger-2">
+          <div class="hero-numeral" id="stat-applied">0</div>
+          <div class="hero-label">Applied</div>
+          <div class="hero-subtext">Verified submissions on target sites</div>
+        </div>
+        <div class="hero-card animate-entry stagger-3 hero-card-link" id="hero-needs-you" role="button" tabindex="0" aria-label="Jump to items that need your attention">
+          <div class="hero-numeral" id="stat-blocked">0</div>
+          <div class="hero-label">Needs you</div>
+          <div class="hero-subtext">Blocked items needing review below ↓</div>
+        </div>
+      </div>
+
+      <!-- Send Queue Rows (Collapsed height <= 64px) -->
+      <section class="card animate-entry stagger-4" id="send-queue-panel">
+        <div class="card-title">
+          <h2>Send queue</h2>
+          <span class="pill" id="queue-count-badge">0 ready to send</span>
+        </div>
+        <p class="hero-subtext u-mb8">Tabs prefilled by model. Press <b>I sent it</b> (<kbd>S</kbd>) or <b>Skip</b> (<kbd>K</kbd>). Click or <kbd>Space</kbd> to expand note.</p>
+        <div id="queue-card-list" class="queue-card-list" role="list" aria-label="Contacts awaiting your message send">
+          <!-- Rendered dynamically as compact <= 64px rows -->
+        </div>
+      </section>
+
+      <!-- Needs You / Open Items -->
+      <section class="card animate-entry stagger-5" id="needs-you-panel">
+        <div class="card-title">
+          <h2>Needs you</h2>
+          <span class="pill pill-warn" id="blocker-count-badge">0</span>
+        </div>
+        <p class="hero-subtext u-mb8">Blocked jobs and items needing attention.</p>
+        <ul id="blocker-list" class="u-list u-mt10">
+          <!-- Compact blockers / open items -->
+        </ul>
+      </section>
+    </section>
+
+    <!-- VIEW 2: PIPELINE (Funnel Bar + Jobs Table) -->
+    <section id="view-pipeline" class="view-container" hidden role="tabpanel" aria-labelledby="tab-pipeline">
+      <!-- Funnel Ribbon (Thin single-line bar) -->
+      <div class="card card-tight">
+        <div class="card-title u-mb6">
+          <h2>Pipeline funnel</h2>
+        </div>
+        <div id="funnel-container" class="funnel-container">
+          <!-- Rendered dynamically as single line bar -->
+        </div>
+      </div>
+
+      <!-- Jobs Table -->
+      <div class="card u-mt-md" id="jobs-section">
+        <div class="toolbar-row">
+          <h2 class="h-md">Target jobs</h2>
+          <input type="search" id="jobs-search" class="search-input" placeholder="Search company, role, or ID..." aria-label="Search jobs by keyword">
+        </div>
+
+        <div class="filter-bar" id="jobs-filter-bar" role="toolbar" aria-label="Filter jobs by status">
+          <button type="button" class="filter-chip active" data-filter="">All</button>
+          <button type="button" class="filter-chip" data-filter="TO_APPLY">To apply</button>
+          <button type="button" class="filter-chip" data-filter="APPLIED">Applied</button>
+          <button type="button" class="filter-chip" data-filter="BLOCKED_USER">Needs you</button>
+          <button type="button" class="filter-chip" data-filter="REJECTED">Rejected</button>
+        </div>
+
+        <div class="toolbar-row u-mt10">
+          <button type="button" class="btn btn-primary" id="btn-apply-now">Apply to pending jobs</button>
+          <span class="hero-subtext" id="apply-now-note">Best results: run /apply in Claude Code with Chrome while you are nearby.</span>
+        </div>
+
+        <div class="filter-bar" id="jobs-date-bar" role="toolbar" aria-label="Filter jobs by date updated">
+          <button type="button" class="filter-chip active" data-date="">Any date</button>
+          <button type="button" class="filter-chip" data-date="today">Today</button>
+          <button type="button" class="filter-chip" data-date="yesterday">Yesterday</button>
+          <button type="button" class="filter-chip" data-date="7d">Last 7 days</button>
+        </div>
+
+        <div class="table-wrap u-mt10">
+          <table id="jobs-table" aria-label="Target job postings and application states">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Company</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Tier</th>
+                <th scope="col">Platform</th>
+                <th scope="col">Score</th>
+                <th scope="col">Recruiter</th>
+                <th scope="col">Applied</th>
+                <th scope="col">Updated (UTC)</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: LIBRARY (Collapsed Accordions for All Stored Records) -->
+    <section id="view-library" class="view-container" hidden role="tabpanel" aria-labelledby="tab-library">
+      <!-- 1. Contacts -->
+      <details class="lib-accordion" id="acc-contacts">
+        <summary class="lib-summary">
+          <span>Contacts (<span id="lib-contacts-count">33</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <div class="table-wrap">
+            <table id="contacts-table" aria-label="Scored network contacts">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Company</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Profile</th>
+                </tr>
+              </thead>
+              <tbody id="contacts-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- 2. Recruiter Email Drafts -->
+      <details class="lib-accordion" id="acc-drafts">
+        <summary class="lib-summary">
+          <span>Email drafts (<span id="lib-drafts-count">4</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="email-drafts-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 3. Queued Outreach Messages (Approval queue) -->
+      <details class="lib-accordion" id="acc-queued">
+        <summary class="lib-summary">
+          <span>Queued messages / Approval queue (<span id="lib-queued-count">4</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="approval-queue-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 4. Application Answers -->
+      <details class="lib-accordion" id="acc-app-answers">
+        <summary class="lib-summary">
+          <span>Application answers (<span id="lib-app-answers-count">6</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="app-answers-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 5. Screening Answers -->
+      <details class="lib-accordion" id="acc-screening">
+        <summary class="lib-summary">
+          <span>Screening answers (<span id="lib-screening-count">20</span> keys)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="screening-qa-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 6. Gmail Drafts Record -->
+      <details class="lib-accordion" id="acc-gmail">
+        <summary class="lib-summary">
+          <span>Gmail drafts record (<span id="lib-gmail-count">12</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="gmail-snapshot-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 7. Open Items -->
+      <details class="lib-accordion" id="acc-open-items">
+        <summary class="lib-summary">
+          <span>Open items (<span id="lib-open-items-count">10</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="saved-items-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- 8. Run History -->
+      <details class="lib-accordion" id="acc-runs">
+        <summary class="lib-summary">
+          <span>Run history (<span id="lib-runs-count">15</span>)</span>
+          <span class="hero-subtext">Click to expand</span>
+        </summary>
+        <div class="lib-content">
+          <ul id="runs-list" class="u-list"></ul>
+        </div>
+      </details>
+
+      <!-- System Provenance Card -->
+      <div class="card u-mt12" id="provenance-panel">
+        <div class="card-title">
+          <h2>System provenance</h2>
+        </div>
+        <div class="prov-list">
+          <div><b>Data parity:</b> <span id="data-parity-badge" class="pill">{{data_parity}}</span></div>
+          <div><b>Next cycle:</b> <span id="next-cycle-text" class="hero-subtext">{{next_cycle}}</span></div>
+          <div><b>InMail credits:</b> <span id="inmail-credits-badge" class="pill">--</span></div>
+          <div id="cycle-running-indicator" class="cycle-running" hidden>⚡ Cycle running right now...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: ANSWERS (Table for Drafted Answers Bank) -->
+    <section id="view-answers" class="view-container" hidden role="tabpanel" aria-labelledby="tab-answers">
+      <div class="card">
+        <div class="card-title">
+          <h2>Drafted answers</h2>
+          <span class="pill" id="answers-count-badge">0 drafted</span>
+        </div>
+        <p class="hero-subtext u-mb8">Review and approve new answers saved during application sessions.</p>
+        <div class="table-wrap u-mt10">
+          <table id="answers-table" aria-label="Drafted answers bank table">
+            <thead>
+              <tr>
+                <th scope="col">Question</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Kind</th>
+                <th scope="col">Source</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="answers-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-bar" role="contentinfo">
+    <div>Job Search Engine — Control Room UI v2.1</div>
+    <div id="footer-db-path">Connected: harness.db (query_only WAL mode)</div>
+    <div id="footer-last-sync">Updated: --:--:-- UTC</div>
+  </footer>
+
+  <!-- Undo Banner Toast -->
+  <aside id="undo-banner" class="undo-banner" role="status" aria-live="assertive">
+    <span id="undo-message">Marked contact</span>
+    <button type="button" class="btn btn-sm btn-primary" id="btn-undo-action" aria-label="Undo last action">Undo (6s)</button>
+  </aside>
+
+  <!-- Command Palette Modal -->
+  <div id="command-palette-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="palette-box" role="dialog" aria-modal="true" aria-label="Command Palette">
+      <div class="palette-input-wrap">
+        <input type="text" id="palette-input" class="palette-input" placeholder="Type a command or jump to section..." aria-label="Search command palette">
+        <kbd>Esc</kbd>
+      </div>
+      <ul id="palette-results" class="palette-results" role="listbox"></ul>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts & Commands Modal -->
+  <div id="shortcuts-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="palette-box" role="dialog" aria-modal="true" aria-label="Keyboard Shortcuts and Help">
+      <div class="palette-input-wrap u-between">
+        <h3 class="h-modal">Keyboard Shortcuts & Commands</h3>
+        <button type="button" class="btn btn-sm" id="btn-close-shortcuts" aria-label="Close shortcuts modal">✕</button>
+      </div>
+      <div class="u-pad16">
+        <table class="u-w100">
+          <tbody>
+            <tr><td><kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd></td><td>Switch views: <b>Today</b>, <b>Pipeline</b>, <b>Library</b></td></tr>
+            <tr><td><kbd>Space</kbd></td><td>Expand / collapse focused contact card</td></tr>
+            <tr><td><kbd>S</kbd></td><td>Mark focused contact as <b>I sent it</b></td></tr>
+            <tr><td><kbd>K</kbd></td><td>Mark focused contact as <b>Skip</b></td></tr>
+            <tr><td><kbd>J</kbd> / <kbd>L</kbd></td><td>Focus next / previous contact card</td></tr>
+            <tr><td><kbd>⌘K</kbd> / <kbd>Ctrl+K</kbd></td><td>Open Command Palette</td></tr>
+            <tr><td><kbd>T</kbd></td><td>Toggle Dark / Light Theme</td></tr>
+            <tr><td><kbd>?</kbd></td><td>Toggle this Shortcuts Help modal</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Close any active modal or menu</td></tr>
+          </tbody>
+        </table>
+        <div class="u-mt16 u-right">
+          <button type="button" class="btn btn-sm btn-primary" id="btn-open-palette-from-help" aria-label="Open command palette from help modal">Open Command Palette (⌘K)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

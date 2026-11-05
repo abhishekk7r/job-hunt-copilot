@@ -1,0 +1,14 @@
+Subject: Application for {role} - {candidate_name}
+
+Hi {first_name},
+
+{opener}
+
+{bullets}
+
+Resume: {resume_url}
+Notice Period: {notice_period}
+
+Best regards,
+{candidate_name}
+{email_primary}

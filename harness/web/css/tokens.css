@@ -1,0 +1,73 @@
+/* tokens.css - Design Tokens for Job Harness Control Room */
+
+:root {
+  /* Color Scheme - Dark Theme (Default) */
+  --bg: #0E1013;
+  --surface: #15181C;
+  --surface-2: #1B1F24;
+  --surface-3: #22272E;
+  --line: #262B31;
+  --line-strong: #363D47;
+  --fg: #E8E6DF;
+  --muted: #8B9097;
+  --accent: #7C9CFF;
+  --accent-tint: rgba(124, 156, 255, 0.12);
+  --accent-hover: #9bb4ff;
+
+  /* Semantic State Colors */
+  --ok: #2F9E6B;
+  --ok-tint: rgba(47, 158, 107, 0.14);
+  --warn: #D9902F;
+  --warn-tint: rgba(217, 144, 47, 0.14);
+  --crit: #D8453A;
+  --crit-tint: rgba(216, 69, 58, 0.16);
+
+  /* Geometry & Radius Scale */
+  --r-none: 0px;
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-full: 9999px;
+
+  /* Typography Stacks */
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-ui: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  /* Layout & Sizing */
+  --max-w: 1440px;
+  --bar-h: 56px;
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+
+  /* Transitions */
+  --t-fast: 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  --t-normal: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --t-flow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light Theme - Printed Operations Ledger */
+[data-theme="light"] {
+  --bg: #EFEDE6;
+  --surface: #F7F5EF;
+  --surface-2: #E8E5DC;
+  --surface-3: #DEDAD0;
+  --line: #D6D2C6;
+  --line-strong: #BCB6A7;
+  --fg: #14161A;
+  --muted: #5F646B;
+  --accent: #2B4BFF;
+  --accent-tint: rgba(43, 75, 255, 0.08);
+  --accent-hover: #1535e6;
+
+  --ok: #1B7A4E;
+  --ok-tint: rgba(27, 122, 78, 0.12);
+  --warn: #B36B15;
+  --warn-tint: rgba(179, 107, 21, 0.12);
+  --crit: #C23328;
+  --crit-tint: rgba(194, 51, 40, 0.12);
+}

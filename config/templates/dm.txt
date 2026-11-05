@@ -1,0 +1,5 @@
+Hi {first_name}, {opener} ({job_url}).
+
+{bullets}
+
+Resume: {resume_url} | Notice period: {notice_period}.

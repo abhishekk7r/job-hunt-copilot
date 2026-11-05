@@ -1,0 +1,2 @@
+# one company name per line (copy to excluded_companies.local.txt)
+example company

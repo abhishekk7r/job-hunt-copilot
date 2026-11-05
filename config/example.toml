@@ -1,0 +1,38 @@
+# config/example.toml - Example configuration template with placeholders
+name = "[YOUR_NAME]"
+email = "[YOUR_EMAIL]"
+phone = "[YOUR_PHONE]"
+location = "[YOUR_LOCATION]"
+relocation_preference = "Open to Remote"
+resume_pdf_path = "documents/resume.pdf"
+resume_url = "https://example.com/resume"
+notice_period = "30 days"
+total_experience = "3 years"
+min_ctc_lpa = 22
+expected_ctc = 30
+
+target_roles = ["SDE-2", "Software Development Engineer 2", "Senior Backend Engineer", "Backend Engineer"]
+required_stack = ["Java", "Spring Boot", "Microservices", "AWS", "Kafka"]
+excluded_stack = ["Android", "iOS", "Flask", "React-only", "Frontend-only"]
+banned_links = ["shorturl.at"]
+
+bullets = [
+    "Experienced backend engineer in Java, Spring Boot, distributed microservices",
+    "High throughput routing layers and cloud architecture (AWS, Kafka)",
+    "Strong foundation in enterprise system modernization and performance tuning"
+]
+
+pitch = """Experienced backend engineer with expertise in distributed systems, Java, Spring Boot, and cloud architecture."""
+
+[caps]
+applications_per_run = 20
+people_searches_per_run = 20
+inmail_credits = 9
+
+[screening]
+notice_period_days = "30 days"
+java_years = "3 years"
+spring_boot_years = "3 years"
+microservices_years = "3 years"
+aws_years = "3 years"
+kafka_years = "3 years"

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Easy Apply Form</title></head>
+<body>
+  <form id="jobs-apply-form">
+    <label for="name">Full Name</label>
+    <input type="text" id="name" name="name" required value="Candidate Name" />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required value="candidate@example.com" />
+
+    <label for="phone">Phone</label>
+    <input type="tel" id="phone" name="phone" required value="" />
+
+    <label for="notice">Notice Period</label>
+    <input type="text" id="notice" name="notice" required value="15 days" /> <!-- Mismatch by Simplify -->
+
+    <label for="expected_salary">Expected CTC (LPA)</label>
+    <input type="text" id="expected_salary" name="expected_salary" required value="25" /> <!-- Mismatch by Simplify -->
+
+    <label for="resume">Resume Upload</label>
+    <input type="file" id="resume" name="resume" required />
+
+    <button type="button" id="simplify-submit">Simplify Autofill & Submit</button>
+    <button type="submit" id="site-submit">Submit Application</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "count": 2,
+  "jobs": [
+    {
+      "id": 201,
+      "title": "Senior Backend Developer (Java / Spring Boot)",
+      "company": "Globex",
+      "location": "Bangalore",
+      "url": "https://www.instahyre.com/job-201-senior-backend-developer/",
+      "salary_min_lpa": 24,
+      "salary_max_lpa": 30,
+      "experience_years": 3
+    },
+    {
+      "id": 202,
+      "title": "Staff Platform Engineer",
+      "company": "Hooli",
+      "location": "Bangalore",
+      "url": "https://www.instahyre.com/job-202-staff-platform-engineer/",
+      "salary_min_lpa": 38,
+      "salary_max_lpa": 50,
+      "experience_years": 4
+    }
+  ]
+}

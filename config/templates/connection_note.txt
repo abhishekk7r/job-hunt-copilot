@@ -1,0 +1,1 @@
+Hi {first_name}, {opener}. {bullets} Would love to connect! Resume: {resume_url}

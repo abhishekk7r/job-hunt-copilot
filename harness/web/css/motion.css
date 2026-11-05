@@ -1,0 +1,63 @@
+/* motion.css - Performance-Guarded Motion System & Accessibility Controls */
+
+@keyframes reveal-up {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Orchestrated Entry Reveal */
+.animate-entry {
+  animation: reveal-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.20s; }
+.stagger-6 { animation-delay: 0.24s; }
+.stagger-7 { animation-delay: 0.28s; }
+.stagger-8 { animation-delay: 0.32s; }
+
+/* Status Dot Pulse for Active/Running */
+.status-dot.running {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+/* FLIP Dismissal Transitions */
+.queue-card.dismissing {
+  opacity: 0;
+  transform: translateX(30px) scale(0.96);
+  pointer-events: none;
+}
+
+/* Accessibility: Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .status-dot.running {
+    animation: none;
+  }
+
+  .queue-card.dismissing {
+    display: none !important;
+  }
+}

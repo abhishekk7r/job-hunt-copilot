@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Git pre-commit hook: verify no personal data or PII blocklist patterns are committed.
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$REPO_ROOT"
+
+if [ -f "tools/check_pii.py" ]; then
+    python3 tools/check_pii.py
+fi
