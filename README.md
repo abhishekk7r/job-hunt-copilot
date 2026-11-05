@@ -27,6 +27,7 @@ I build it with Claude Code. Claude drives the browser, reads the job descriptio
 - **Find** (`/find`): Searches configured job portals, scores and ranks listings against your target profile, filters out low-signal postings, and writes structured research notes for top matches.
 - **Apply** (`/apply`): Drives browser form filling with Claude in Chrome using answers from your local answer bank. It fills out repetitive form fields, explains its choices, and stops for your review.
 - **Reach** (`/reach`): Identifies relevant engineers, hiring managers, and recruiters for applied roles, respecting strict daily caps, and drafts personalized outreach messages tailored to each contact.
+- **Send** (`/send`): Supervised outreach dispatch: opens Chrome tabs with prefilled notes/InMails/drafts, stops for user to click Send.
 
 ## What it never does
 
@@ -56,12 +57,11 @@ I build it with Claude Code. Claude drives the browser, reads the job descriptio
    cd job-hunt-copilot
    ```
 
-2. Create a virtual environment and install dependencies:
+2. Bootstrap environment and dependencies:
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
+   make setup
    ```
+   (Creates `.venv`, installs requirements, runs `bun install` for CLIs, and migrates `harness.db`).
 
 3. Configure your local settings and profile:
    ```bash
@@ -75,9 +75,12 @@ I build it with Claude Code. Claude drives the browser, reads the job descriptio
    ```
 
 5. Run the commands in Claude Code:
-   - `/find` — Discover and rank matching roles
+   - `/find` — Discover and rank matching roles (first run guides setup questions)
    - `/apply` — Guided application form filling
    - `/reach` — Discover contacts and draft outreach
+   - `/send` — Review and send outreach in Chrome
+
+See detailed guide in [`docs/ONBOARDING.md`](docs/ONBOARDING.md).
 
 ## Privacy
 

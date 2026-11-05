@@ -17,7 +17,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 EVALUATION = REPO / ".claude" / "skills" / "job-application-assistant" / "04-job-evaluation.md"
 APPLY = REPO / ".claude" / "commands" / "apply.md"
-INTERVIEW = REPO / ".claude" / "commands" / "interview.md"
+INTERVIEW = (REPO / ".claude" / "commands" / "interview.md") if (REPO / ".claude" / "commands" / "interview.md").exists() else (REPO / ".claude" / "commands" / "extra" / "interview.md")
 
 
 def _sections(text: str, marker: str) -> dict[str, str]:

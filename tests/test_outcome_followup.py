@@ -20,7 +20,7 @@ except ImportError:
     _HAVE_YAML = False
 
 REPO = Path(__file__).resolve().parent.parent
-COMMAND = REPO / ".claude" / "commands" / "outcome.md"
+COMMAND = (REPO / ".claude" / "commands" / "outcome.md") if (REPO / ".claude" / "commands" / "outcome.md").exists() else (REPO / ".claude" / "commands" / "extra" / "outcome.md")
 
 
 class OutcomeFollowupBranchSpec(unittest.TestCase):

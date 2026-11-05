@@ -18,7 +18,7 @@ except ImportError:
     _HAVE_YAML = False
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-COMMAND_FILE = REPO_ROOT / ".claude" / "commands" / "html-report.md"
+COMMAND_FILE = (REPO_ROOT / ".claude" / "commands" / "html-report.md") if (REPO_ROOT / ".claude" / "commands" / "html-report.md").exists() else (REPO_ROOT / ".claude" / "commands" / "extra" / "html-report.md")
 LINT_SCRIPT = REPO_ROOT / "tools" / "lint_skills.py"
 GITIGNORE = REPO_ROOT / ".gitignore"
 

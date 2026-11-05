@@ -31,6 +31,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 SPEC_GLOBS = (
     ".claude/commands/*.md",
+    ".claude/commands/extra/*.md",
     ".claude/skills/**/*.md",
     ".claude/agents/*.md",
 )
@@ -41,7 +42,7 @@ SPECS = sorted(
 
 # Specs known to run a tool today; the glob must keep finding them.
 KNOWN_TOOL_SPECS = {
-    ".claude/commands/rank.md",
+    ".claude/commands/extra/rank.md",
     ".claude/skills/job-scraper/SKILL.md",
     ".claude/skills/job-application-assistant/04-job-evaluation.md",
     ".claude/skills/job-application-assistant/09-web-research.md",

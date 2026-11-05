@@ -41,36 +41,25 @@ except ImportError:  # `python -m unittest discover -s tests` imports test modul
     from _upstream import is_upstream_checkout
 
 REPO = Path(__file__).resolve().parent.parent
-RESET = REPO / ".claude" / "commands" / "reset.md"
-SETUP = REPO / ".claude" / "commands" / "setup.md"
+RESET = (REPO / ".claude" / "commands" / "reset.md") if (REPO / ".claude" / "commands" / "reset.md").exists() else (REPO / ".claude" / "commands" / "extra" / "reset.md")
+SETUP = (REPO / ".claude" / "commands" / "setup.md") if (REPO / ".claude" / "commands" / "setup.md").exists() else (REPO / ".claude" / "commands" / "extra" / "setup.md")
 BASH = find_bash()
 
 
 def tracked_document_subfolders():
     """Names of documents/ subfolders tracked in git (ignores local noise)."""
-    try:
-        out = subprocess.run(
-            ["git", "ls-files", "documents/"],
-            cwd=REPO,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout
-        folders = set()
-        for line in out.splitlines():
-            parts = line.split("/")
-            if len(parts) >= 3:  # documents/<subfolder>/<file...>
-                folders.add(parts[1])
-        if folders:
-            return folders
-    except Exception:
-        pass
+    out = subprocess.run(
+        ["git", "ls-files", "documents/"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
     folders = set()
-    docs_dir = REPO / "documents"
-    if docs_dir.is_dir():
-        for p in docs_dir.iterdir():
-            if p.is_dir() and not p.name.startswith("."):
-                folders.add(p.name)
+    for line in out.splitlines():
+        parts = line.split("/")
+        if len(parts) >= 3:  # documents/<subfolder>/<file...>
+            folders.add(parts[1])
     return folders
 
 

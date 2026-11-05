@@ -17,8 +17,8 @@ ROOT = Path(__file__).resolve().parent.parent
 # same trap: an agent asked to "read seen_jobs.json" looks in the repo root first.
 SPECS = [
     ROOT / ".claude" / "skills" / "job-scraper" / "SKILL.md",
-    ROOT / ".claude" / "commands" / "rank.md",
-    ROOT / ".claude" / "commands" / "notion-sync.md",
+    ROOT / ".claude" / "commands" / "extra" / "rank.md",
+    ROOT / ".claude" / "commands" / "extra" / "notion-sync.md",
     ROOT / ".claude" / "skills" / "upskill" / "SKILL.md",
 ]
 BARE = re.compile(r"(?<!job_scraper/)(?<![\w/.-])seen_jobs\.json")

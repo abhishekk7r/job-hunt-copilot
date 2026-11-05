@@ -13,7 +13,7 @@ try:
 except ImportError:  # unittest discover -s tests imports modules top-level
     from _bash import find_bash
 
-COMMAND = Path(__file__).resolve().parent.parent / ".claude/commands/reset.md"
+COMMAND = (Path(__file__).resolve().parent.parent / ".claude/commands/reset.md") if (Path(__file__).resolve().parent.parent / ".claude/commands/reset.md").exists() else (Path(__file__).resolve().parent.parent / ".claude/commands/extra/reset.md")
 FOLDERS = ("cv", "linkedin", "diplomas", "references", "projects", "postings", "applications")
 BASH = find_bash()
 # The block is POSIX shell by design: Claude Code's Bash tool runs the user's

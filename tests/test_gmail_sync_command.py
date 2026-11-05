@@ -14,7 +14,7 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-GMAIL_SYNC = REPO / ".claude" / "commands" / "gmail-sync.md"
+GMAIL_SYNC = (REPO / ".claude" / "commands" / "gmail-sync.md") if (REPO / ".claude" / "commands" / "gmail-sync.md").exists() else (REPO / ".claude" / "commands" / "extra" / "gmail-sync.md")
 
 
 class TestGmailQueryOperators(unittest.TestCase):

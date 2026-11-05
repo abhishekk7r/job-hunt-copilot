@@ -18,6 +18,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def main() -> int:
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print("Usage: python3 tools/save_candidates.py < candidates.json")
+        print("Save scored LinkedIn candidates from stdin JSON into contacts (PROPOSED).")
+        return 0
     payload = json.load(sys.stdin)
     company = str(payload.get("company", "")).strip()
     db = os.environ.get("HARNESS_DB", str(REPO_ROOT / "harness.db"))

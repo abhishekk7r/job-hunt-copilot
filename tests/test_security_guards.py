@@ -680,7 +680,8 @@ class GitignorePatternBehaviorTests(unittest.TestCase):
         # so either half can move independently and each must be pinned.
         folder = "documents/applications/<company>_<role>/"
         filename = "interview_prep_<stage>.md"
-        spec = (REPO_ROOT / ".claude" / "commands" / "interview.md").read_text(encoding="utf-8")
+        interview_cmd = (REPO_ROOT / ".claude" / "commands" / "interview.md") if (REPO_ROOT / ".claude" / "commands" / "interview.md").exists() else (REPO_ROOT / ".claude" / "commands" / "extra" / "interview.md")
+        spec = interview_cmd.read_text(encoding="utf-8")
         for fragment in (folder, filename):
             # assertTrue, not assertIn: the haystack is the whole command spec,
             # and dumping it buries the one sentence explaining the failure.

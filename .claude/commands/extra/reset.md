@@ -142,7 +142,7 @@ Wait for the user's response.
 
 ### Profile reset
 
-Every skill file under `.claude/skills/job-application-assistant/` opens with a `---` frontmatter block carrying its `framework_version` marker. That marker is framework data, not candidate data. Never remove or rewrite it - the two full-file replacements below keep it and replace only what follows.
+Every skill file under `.claude/skills/job-application-assistant/` opens with a `---` frontmatter block carrying its `framework_version` marker. That marker is framework data, not candidate data: `tools/check_framework_version.py` fails a file without it, and `tools/check_upstream_updates.py` cannot compare the file against upstream. Never remove or rewrite it - the two full-file replacements below keep it and replace only what follows.
 
 **For `01-candidate-profile.md`**, keep the file's `---` frontmatter block exactly as it is and replace everything below it with:
 

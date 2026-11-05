@@ -16,7 +16,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 README = REPO / "README.md"
 SETUP_GUIDE = REPO / "SETUP.md"
-SETUP_COMMAND = REPO / ".claude" / "commands" / "setup.md"
+SETUP_COMMAND = (REPO / ".claude" / "commands" / "setup.md") if (REPO / ".claude" / "commands" / "setup.md").exists() else (REPO / ".claude" / "commands" / "extra" / "setup.md")
 
 
 def section(text: str, heading: str) -> str:
@@ -29,7 +29,10 @@ def section(text: str, heading: str) -> str:
     return match.group(1) if match else ""
 
 
-from tests._upstream import is_upstream_checkout
+try:
+    from tests._upstream import is_upstream_checkout
+except ImportError:
+    from _upstream import is_upstream_checkout
 
 
 @unittest.skipIf(not is_upstream_checkout(), "onboarding privacy guard targets the upstream template")

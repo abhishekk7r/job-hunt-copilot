@@ -1,9 +1,25 @@
-.PHONY: docs test test-python pii-check test-bun test-web lint dashboard nightly
+.PHONY: setup docs test test-python pii-check test-bun test-web lint dashboard nightly
 
 VENV ?= .venv
 PYTHON ?= $(VENV)/bin/python
+PIP ?= $(VENV)/bin/pip
 PYTEST ?= $(VENV)/bin/pytest
 BUN ?= $(shell which bun 2>/dev/null || echo $$HOME/.bun/bin/bun)
+
+setup:
+	@test -d $(VENV) || python3 -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
+	@if [ -x "$(BUN)" ]; then \
+		echo "Installing Bun dependencies for search CLIs..."; \
+		export PATH="$$HOME/.bun/bin:$$PATH"; \
+		(cd .agents/skills/linkedin-search/cli && $(BUN) install); \
+		(cd .agents/skills/freehire-search/cli && $(BUN) install); \
+		(cd .agents/skills/wellfound-search/cli && $(BUN) install); \
+	else \
+		echo "Bun not found, skipping search CLI install"; \
+	fi
+	$(PYTHON) tools/migrate.py
 
 test: pii-check test-python test-bun test-web
 

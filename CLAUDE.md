@@ -6,6 +6,7 @@ Job search copilot: finds relevant roles, assists with supervised application fo
 - `/find` — Search, score, and rank job postings against your target profile.
 - `/apply` — Guided form filling in Chrome with Claude; stops for user review before submission.
 - `/reach` — Discover team contacts and recruiters for applied roles and draft tailored outreach.
+- `/send` — Interactive outreach dispatch: prefill tabs in Chrome, user reviews and clicks Send.
 
 ## Personal Data
 Personal details and config live only in git-ignored files:

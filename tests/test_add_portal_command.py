@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-COMMAND = REPO / ".claude" / "commands" / "add-portal.md"
+COMMAND = (REPO / ".claude" / "commands" / "add-portal.md") if (REPO / ".claude" / "commands" / "add-portal.md").exists() else (REPO / ".claude" / "commands" / "extra" / "add-portal.md")
 
 
 class TestAddPortalCommand(unittest.TestCase):

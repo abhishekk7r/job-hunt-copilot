@@ -68,9 +68,31 @@ def get_reach_targets(db: str, days: int = 14) -> list:
     return targets
 
 
+def get_pending_drafts(db: str) -> list:
+    c = sqlite3.connect(db)
+    c.execute("PRAGMA query_only = ON")
+    c.row_factory = sqlite3.Row
+    rows = c.execute("""
+        SELECT q.id, q.job_id, q.company, q.role, q.recruiter_name, q.recruiter_linkedin,
+               q.channel, q.rendered_message, q.char_count, q.approval_status
+        FROM outreach_queue q
+        WHERE q.approval_status IN ('PENDING_MOBILE_REVIEW', 'APPROVED_TO_SEND')
+        ORDER BY q.id ASC
+    """).fetchall()
+    drafts = [dict(r) for r in rows]
+    c.close()
+    return drafts
+
+
 if __name__ == "__main__":
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print("Usage: python3 tools/reachout_data.py [--targets] [--drafts]")
+        print("Prints existing reach-out state, target jobs needing contacts, or pending drafts.")
+        sys.exit(0)
     db_path = os.environ.get("HARNESS_DB", str(REPO_ROOT / "harness.db"))
     if "--targets" in sys.argv:
         print(json.dumps(get_reach_targets(db_path), indent=2))
+    elif "--drafts" in sys.argv:
+        print(json.dumps(get_pending_drafts(db_path), indent=2))
     else:
         print(json.dumps(collect(db_path), indent=2))

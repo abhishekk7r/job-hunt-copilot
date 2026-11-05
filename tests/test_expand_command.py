@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-EXPAND_COMMAND_FILE = REPO_ROOT / ".claude" / "commands" / "expand.md"
+EXPAND_COMMAND_FILE = (REPO_ROOT / ".claude" / "commands" / "expand.md") if (REPO_ROOT / ".claude" / "commands" / "expand.md").exists() else (REPO_ROOT / ".claude" / "commands" / "extra" / "expand.md")
 BEHAVIORAL_PROFILE = REPO_ROOT / ".claude" / "skills" / "job-application-assistant" / "02-behavioral-profile.md"
 
 

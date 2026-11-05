@@ -279,3 +279,9 @@ def save_ranked_contacts(
     conn.commit()
     conn.close()
     return saved_candidates
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Contacts scoring, ranking, and deterministic connection note generator.")
+    parser.parse_args()

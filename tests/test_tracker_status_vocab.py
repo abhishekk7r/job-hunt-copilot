@@ -36,12 +36,13 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 COMMANDS = REPO / ".claude" / "commands"
 
-OUTCOME = COMMANDS / "outcome.md"
-GMAIL_SYNC = COMMANDS / "gmail-sync.md"
-HTML_REPORT = COMMANDS / "html-report.md"
-NOTION_SYNC = COMMANDS / "notion-sync.md"
-APPLY = COMMANDS / "apply.md"
-INTERVIEW = COMMANDS / "interview.md"
+EXTRA = COMMANDS / "extra"
+OUTCOME = (COMMANDS / "outcome.md") if (COMMANDS / "outcome.md").exists() else (EXTRA / "outcome.md")
+GMAIL_SYNC = (COMMANDS / "gmail-sync.md") if (COMMANDS / "gmail-sync.md").exists() else (EXTRA / "gmail-sync.md")
+HTML_REPORT = (COMMANDS / "html-report.md") if (COMMANDS / "html-report.md").exists() else (EXTRA / "html-report.md")
+NOTION_SYNC = (COMMANDS / "notion-sync.md") if (COMMANDS / "notion-sync.md").exists() else (EXTRA / "notion-sync.md")
+APPLY = (COMMANDS / "apply.md") if (COMMANDS / "apply.md").exists() else (EXTRA / "apply.md")
+INTERVIEW = (COMMANDS / "interview.md") if (COMMANDS / "interview.md").exists() else (EXTRA / "interview.md")
 
 VOCAB_ANCHOR = "## Tracker status vocabulary"
 

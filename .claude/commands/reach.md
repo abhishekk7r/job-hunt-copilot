@@ -1,10 +1,5 @@
 # /reach: Find People & Draft Custom Outreach
 
-> **Safer note:** Automating LinkedIn, even read-only, breaks LinkedIn's terms of service and can
-> get your account restricted or banned. The same goes for other job sites. Use these features at
-> your own risk, keep the daily limits low, and stop at the first warning. This project never
-> sends messages or connection requests for you; you press Send.
-
 Discover the right team members, engineering managers, and recruiters for recent applications and referral-first jobs, and prepare custom outreach drafts.
 
 ## Core Rules
@@ -123,22 +118,18 @@ python3 harness/outreach.py validate --channel note --job <job_id> --file <path>
 ```
 *(Choose channel: `note`, `inmail`, or `email`). The command must exit with code 0 before saving.*
 
-### 7. Output Prefills and Drafts
-- **Connection Note:** Claude in Chrome opens the profile, clicks Connect -> Add a note, types the message, and **STOPS**. Never click Send.
-  ```bash
-  python3 tools/network_batch.py mark <contact_id> PREFILLED
-  ```
-- **InMail:** Open compose, fill subject and body, and **STOPS**. Mark `PREFILLED`.
-- **Email:** Create draft via Gmail MCP `gmail_create_draft` only. Record in `outreach_email_drafts`.
-- All drafts are queued in `outreach_queue` with `approval_status = PENDING_MOBILE_REVIEW` for the owner to review and send.
+### 7. Save Drafts Only (Ready for /send)
+`/reach` discovers people and writes validated drafts only; the interactive review and prefilling happens in `/send`.
+- **Queue Drafts:** Insert each validated message into `outreach_queue` with `approval_status = 'PENDING_MOBILE_REVIEW'`:
+  - `job_id`, `company`, `role`, `recruiter_name`, `recruiter_linkedin`, `channel`, `rendered_message`, `char_count`
+- **Email Drafts:** For email channel, create a draft via Gmail MCP `gmail_create_draft` and record in `outreach_email_drafts`.
+- Update job's `outreach_state = 'DRAFTED'`.
+- Claude **never** clicks Send, and does not open prefill tabs during `/reach`. Sending is reviewed and initiated interactively in `/send`.
 
 ### 8. Summary Table
-Output a clean markdown table of discovered contacts:
+Output a clean markdown table of discovered contacts and saved drafts:
 
 | Job ID | Company | Role | Contact Name | Title | Channel | Status | Note / Draft Summary |
 |---|---|---|---|---|---|---|---|
-| 101 | Acme Corp | Senior Backend Engineer | Alex Smith | Senior Software Engineer | Connection Note | PREFILLED | Tab left open for owner |
+| 101 | Acme Corp | Senior Backend Engineer | Alex Smith | Senior Software Engineer | Connection Note | DRAFTED | Validated (245 chars) |
 | 101 | Acme Corp | Senior Backend Engineer | Sarah Connor | Engineering Manager | Email | DRAFTED | Gmail draft created |
-|---|---|---|---|---|---|---|
-| 101 | Acme Corp | Senior Backend Engineer | Alex Smith | Senior Software Engineer | senior_sde | Peer engineer on core backend team |
-| 101 | Acme Corp | Senior Backend Engineer | Sarah Connor | Engineering Manager | hiring_manager | EM for Payments Infra team |

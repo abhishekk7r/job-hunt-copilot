@@ -13,7 +13,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 APPLY = REPO / ".claude" / "commands" / "apply.md"
-INTERVIEW = REPO / ".claude" / "commands" / "interview.md"
+INTERVIEW = (REPO / ".claude" / "commands" / "interview.md") if (REPO / ".claude" / "commands" / "interview.md").exists() else (REPO / ".claude" / "commands" / "extra" / "interview.md")
 RESEARCH = REPO / ".claude" / "skills" / "job-application-assistant" / "09-web-research.md"
 
 
@@ -39,7 +39,8 @@ class OtherFrontDoors(unittest.TestCase):
         self.assertGreaterEqual(tuple(int(part) for part in version.groups()), (1, 3, 6))
 
     def test_outcome_fresh_fetch_is_gated(self):
-        text = (REPO / ".claude" / "commands" / "outcome.md").read_text(encoding="utf-8")
+        cmd = (REPO / ".claude" / "commands" / "outcome.md") if (REPO / ".claude" / "commands" / "outcome.md").exists() else (REPO / ".claude" / "commands" / "extra" / "outcome.md")
+        text = cmd.read_text(encoding="utf-8")
         self.assertIn("posting_guard", text)
 
     def test_interview_fetch_fallback_is_gated(self):

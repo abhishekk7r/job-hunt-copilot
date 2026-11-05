@@ -29,7 +29,10 @@ from harness.config import identity_capsule  # noqa: E402
 DAILY_CAP = 25
 NOTE_MAX = 300
 VALID_MARKS = {"PREFILLED", "SENT", "SKIPPED"}
-BANNED_LINKS_DEFAULT = identity_capsule().get("forbidden_links", [])
+try:
+    BANNED_LINKS_DEFAULT = identity_capsule().get("forbidden_links", [])
+except Exception:
+    BANNED_LINKS_DEFAULT = []
 ACTION = "network_prefill"
 
 CAPS = {

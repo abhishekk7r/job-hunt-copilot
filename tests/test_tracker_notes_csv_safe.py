@@ -22,8 +22,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 COMMANDS = REPO / ".claude" / "commands"
-GMAIL_SYNC = COMMANDS / "gmail-sync.md"
-OUTCOME = COMMANDS / "outcome.md"
+EXTRA = COMMANDS / "extra"
+GMAIL_SYNC = (COMMANDS / "gmail-sync.md") if (COMMANDS / "gmail-sync.md").exists() else (EXTRA / "gmail-sync.md")
+OUTCOME = (COMMANDS / "outcome.md") if (COMMANDS / "outcome.md").exists() else (EXTRA / "outcome.md")
 
 TRACKER_HEADER = (
     "date,company,sector,role,role_type,channel,status,contact_person,"
